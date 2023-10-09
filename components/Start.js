@@ -8,6 +8,8 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 
 const Start = ({ navigation }) => {
@@ -44,7 +46,10 @@ const Start = ({ navigation }) => {
       resizeMode="cover"
       style={styles.bgImage}
     >
-      <ScrollView contentContainerStyle={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={styles.container}
+      >
         <Text style={styles.chatTitle}>ChatApp</Text>
         <View style={styles.inputContainer}>
           <TextInput
@@ -52,11 +57,20 @@ const Start = ({ navigation }) => {
             value={name}
             onChangeText={setName}
             placeholder="Your Name"
+            accessible={true}
+            accessibilityLabel="Name inputbox"
+            accessibilityHint="Enter your name here"
+            accessibilityRole="text"
           />
           <Text style={styles.colorSelectorTitle}>
             Choose a background color:
           </Text>
-          <View style={styles.bgColorWrapper}>
+          <View
+            style={styles.bgColorWrapper}
+            accessible={true}
+            accessibilityLabel="Background color selection"
+            accessibilityRole="menu"
+          >
             <TouchableOpacity
               style={[
                 styles.colorCircle,
@@ -64,6 +78,9 @@ const Start = ({ navigation }) => {
                 { backgroundColor: backgroundColors.a },
               ]}
               onPress={() => setColor(backgroundColors.a)}
+              accessible={true}
+              accessibilityLabel="Color - black"
+              accessibilityRole="menuitem"
             ></TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -72,6 +89,9 @@ const Start = ({ navigation }) => {
                 { backgroundColor: backgroundColors.b },
               ]}
               onPress={() => setColor(backgroundColors.b)}
+              accessible={true}
+              accessibilityLabel="Color - dark gray/blue"
+              accessibilityRole="menuitem"
             ></TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -80,6 +100,9 @@ const Start = ({ navigation }) => {
                 { backgroundColor: backgroundColors.c },
               ]}
               onPress={() => setColor(backgroundColors.c)}
+              accessible={true}
+              accessibilityLabel="Color - light gray/blue"
+              accessibilityRole="menuitem"
             ></TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -88,6 +111,9 @@ const Start = ({ navigation }) => {
                 { backgroundColor: backgroundColors.d },
               ]}
               onPress={() => setColor(backgroundColors.d)}
+              accessible={true}
+              accessibilityLabel="Color - light gray/green"
+              accessibilityRole="menuitem"
             ></TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -95,11 +121,15 @@ const Start = ({ navigation }) => {
             onPress={() =>
               navigation.navigate("Chat", { name: name, color: color })
             }
+            accessible={true}
+            accessibilityLabel="Get chatting Button"
+            accessibilityHint="Navigates to the chat screen."
+            accessibilityRole="button"
           >
             <Text style={styles.buttonText}>Get chatting!</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 };
@@ -120,7 +150,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FFFFFF",
     alignSelf: "center",
-    marginBottom: 100,
   },
   inputContainer: {
     backgroundColor: "#FFFFFF",

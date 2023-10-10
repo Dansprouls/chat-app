@@ -11,9 +11,28 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from "react-native";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 const Start = ({ navigation }) => {
+  const auth = getAuth();
   const backgroundImage = require("../chatapp-assets/BackgroundImage.png");
+
+  const signInUser = () => {
+    // Sign in anonymously using Firebase
+    signInAnonymously(auth)
+      .then((result) => {
+        // Navigate to the Chat screen with user information
+        navigation.navigate("Chat", {
+          userID: result.user.uid,
+          name: name,
+          color: color,
+        });
+        Alert.alert("Signed in Successfully!");
+      })
+      .catch((error) => {
+        Alert.alert("Unable to sign in, try again later.", error);
+      });
+  };
 
   const backgroundColors = {
     a: "#090C08",
@@ -118,9 +137,7 @@ const Start = ({ navigation }) => {
           </View>
           <TouchableOpacity
             style={styles.button}
-            onPress={() =>
-              navigation.navigate("Chat", { name: name, color: color })
-            }
+            onPress={signInUser}
             accessible={true}
             accessibilityLabel="Get chatting Button"
             accessibilityHint="Navigates to the chat screen."

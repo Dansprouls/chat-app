@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot,
+} from "firebase/firestore";
 
-const Chat = ({ route, navigation }) => {
-  const { name, color } = route.params;
+const Chat = ({ route, navigation, db }) => {
+  const { name, color, userID } = route.params;
   const [messages, setMessages] = useState([]);
 
-  const onSend = (newMessages) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
-  };
+  let unsubMessages;
 
   useEffect(() => {
+    navigation.setOptions({ title: name });
+  }, []);
+
+  /*useEffect(() => {
     setMessages([
       {
         _id: 1,
@@ -31,11 +39,31 @@ const Chat = ({ route, navigation }) => {
         system: true,
       },
     ]);
-  }, []);
+  }, []);*/
 
   useEffect(() => {
-    navigation.setOptions({ title: name });
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+    unsubMessages = onSnapshot(q, (docs) => {
+      let newMessages = [];
+      docs.forEach((doc) => {
+        newMessages.push({
+          _id: doc.id,
+          ...doc.data(),
+          createdAt: new Date(doc.data().createdAt.toMillis()),
+        });
+      });
+      setMessages(newMessages);
+    });
+    return () => {
+      if (unsubMessages) {
+        unsubMessages();
+      }
+    };
   }, []);
+
+  const onSend = (newMessages) => {
+    addDoc(collection(db, "messages"), newMessages[0]);
+  };
 
   const renderBubble = (props) => {
     return (
@@ -60,7 +88,8 @@ const Chat = ({ route, navigation }) => {
         renderBubble={renderBubble}
         onSend={(messages) => onSend(messages)}
         user={{
-          _id: 1,
+          _id: userID,
+          name,
         }}
         accesible={true}
         accessibilityLabel="Chat text box"

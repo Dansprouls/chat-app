@@ -46,21 +46,6 @@ const Start = ({ navigation }) => {
   const [color, setColor] = useState(backgroundColors.a);
 
   return (
-    /*<View style={styles.container}>
-      <Text> Welcome to ChatApp!</Text>
-      <TextInput
-        style={styles.textInput}
-        value={name}
-        onChangeText={setName}
-        placeholder="Your Name"
-      />
-      <Button
-        title="Go to Chat Screen"
-        onPress={() => navigation.navigate("Chat", { name: name })}
-      />
-    </View>
-    */
-
     <ImageBackground
       source={backgroundImage}
       resizeMode="cover"
